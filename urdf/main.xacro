@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
+
+    <xacro:include filename="$(find project_rp)/urdf/r_link.xacro" />
+    
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="1 1 .1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="1 1 .1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="0.21" ixy="0" ixz="0" iyy="0.27" iyz="0" izz="0.10"/>
+        </inertial>
+    </link>
+    
+    <xacro:r_link prefix="l1" parent="base_link" length="1.0" radius=".1" rpy="0 0 0" joint_xyz="0 0 0.05" link_xyz="0 0 0.5"/>
+    <xacro:r_link prefix="l2" parent="l1_link" length=".3" radius=".1" rpy="0 ${pi/2} 0" joint_xyz="0 0 1" link_xyz="0 0 0" />
+    <xacro:r_link prefix="l3" parent="l2_link" length="1.0" radius=".075" rpy="0 ${-pi/2} 0" joint_xyz="0 0 0" link_xyz="0 0 0.5" />
+    
+    <!-- Add ROS plugin so we can interact with our robot -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>
