@@ -4,7 +4,7 @@ joint_state_controller:
 
 l1_controller:
   type: "position_controllers/JointPositionController"
-  joint: base_to_l1
+  joint: l0_to_l1
 
 l2_controller:
   type: "position_controllers/JointPositionController"

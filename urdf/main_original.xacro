@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
+
+    <xacro:include filename="$(find project_rp)/urdf/r_link.xacro" />
+    <xacro:include filename="$(find project_rp)/urdf/base.xacro" />
+    <xacro:base name="l0" />
+    <xacro:r_link prefix="l1" parent="l0" length="1.0" radius=".1" rpy="0 0 0" joint_xyz="0 0 0.05" link_xyz="0 0 0.5" type="revolute"/>
+    <xacro:r_link prefix="l2" parent="l1" length=".2" radius=".1" rpy="0 ${pi/2} 0" joint_xyz="0 0 1" link_xyz="0 0 0" type="revolute"/>
+    <xacro:r_link prefix="l3" parent="l2" length="1.0" radius=".075" rpy="0 ${-pi/2} 0" joint_xyz="0 0 0" link_xyz="0 0 0.5" type="revolute"/>
+    
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>

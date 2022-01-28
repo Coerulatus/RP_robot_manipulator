@@ -1,31 +1,13 @@
 <?xml version="1.0"?>
-
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
-
     <xacro:include filename="$(find project_rp)/urdf/r_link.xacro" />
-    
-    <link name="base">
-        <visual>
-            <geometry>
-                <box size="1 1 .1"/>
-            </geometry>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="1 1 .1"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="1"/>
-            <inertia ixx="0.21" ixy="0" ixz="0" iyy="0.27" iyz="0" izz="0.10"/>
-        </inertial>
-    </link>
-    
-    <xacro:r_link prefix="l1" parent="base" length="1.0" radius=".1" rpy="0 0 0" joint_xyz="0 0 0.05" link_xyz="0 0 0.5"/>
-    <xacro:r_link prefix="l2" parent="l1" length=".3" radius=".1" rpy="0 ${pi/2} 0" joint_xyz="0 0 1" link_xyz="0 0 0" />
-    <xacro:r_link prefix="l3" parent="l2" length="1.0" radius=".075" rpy="0 ${-pi/2} 0" joint_xyz="0 0 0" link_xyz="0 0 0.5" />
-    
-    <!-- Add ROS plugin so we can interact with our robot -->
+    <xacro:include filename="$(find project_rp)/urdf/base.xacro" />
+    <xacro:base name="l0" />
+    <xacro:r_link prefix="l1" parent="l0" length="1.400000" radius="0.1" joint_rpy="0 0 0" joint_xyz="0 0 0" link_rpy="0 0 0" link_xyz="0 0 0.700000" type="revolute"/>
+    <xacro:r_link prefix="l2" parent="l1" length="0.2" radius="0.1" joint_rpy="-1.570796 0 0" joint_xyz="0 0 1.400000" link_rpy="0 0 0" link_xyz="0 0 0.000000" type="revolute"/>
+    <xacro:r_link prefix="l3" parent="l2" length="1.200000" radius="0.1" joint_rpy="1.570796 0 0" joint_xyz="0 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.600000" type="revolute"/>
+    <xacro:r_link prefix="l4" parent="l3" length="0.2" radius="0.1" joint_rpy="-1.570796 0 0" joint_xyz="0 0 1.200000" link_rpy="0 0 0" link_xyz="0 0 0.000000" type="revolute"/>
+    <xacro:r_link prefix="l5" parent="l4" length="1.000000" radius="0.1" joint_rpy="0.000000 0 0" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="0.500000 0 0" type="revolute"/>
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
             <robotNamespace>/</robotNamespace>

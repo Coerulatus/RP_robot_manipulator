@@ -56,11 +56,94 @@ int main(int argc, char** argv) {
   		thetas.push_back(stof(s4));
   	}
   	
-  	
-  	cout<<alphas.back()<<' '<<as.back()<<' '<<ds.back()<<' '<<thetas.back()<<endl;
+  	//cout<<alphas.back()<<' '<<as.back()<<' '<<ds.back()<<' '<<thetas.back()<<endl;
   	
   	input>>s1>>s2>>s3>>s4;
   }
+  input.close();
+  is_joint_revolute.push_back(1);
+  
+  //make xacro file
+  ofstream xacro_file;
+  xacro_file.open("./src/urdf/main.xacro");
+  xacro_file<<"<?xml version=\"1.0\"?>"<<endl;
+  xacro_file<<"<robot xmlns:xacro=\"http://www.ros.org/wiki/xacro\" name=\"my_robot\">"<<endl;
+  xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/r_link.xacro\" />"<<endl;
+  xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/base.xacro\" />"<<endl;
+  xacro_file<<"    <xacro:base name=\"l0\" />"<<endl;
+  for(int i=0;i<alphas.size()+1;++i){
+  	if(is_joint_revolute[i]){
+  		string s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\" type=\"\"/>";
+  		
+  		string j_type;
+  		string xyz_link;
+  		string link_rpy;
+  		string xyz_joint;
+  		string joint_rpy;
+  		string length;
+  		if(i==0){
+  			j_type = "revolute"; 
+  		 	xyz_link = "0 0 "+to_string(ds[i]/2);
+  		 	link_rpy = "0 0 0";
+  		 	xyz_joint = "0 0 0";
+  		 	joint_rpy = "0 0 0";
+  		 	if(ds[i]==0)
+					length = "0.2";
+				else
+					length = to_string(ds[i]);
+  		}else if(i==alphas.size()){
+  			j_type = "revolute"; //I wanted it to be fixed, ros doesn't like it
+  			xyz_link = to_string(as[i-1]/2)+" 0 0";
+  			link_rpy = "0 "+to_string(M_PI/2)+" 0";
+  			xyz_joint = "0 0 0";
+  			joint_rpy = to_string(alphas[i-1])+" 0 0";
+  			length = to_string(as[i-1]);
+  		}else{
+  			j_type = "revolute";
+  			xyz_link = "0 0 "+to_string(ds[i]/2);
+  			link_rpy = "0 0 0";
+  			xyz_joint = "0 0 "+to_string(ds[i-1]);
+  			joint_rpy = to_string(alphas[i-1])+" 0 0";
+  			if(ds[i]==0)
+					length = "0.2";
+				else
+					length = to_string(ds[i]);
+  		}
+  		
+			//type
+			s_joint.insert(116,j_type);
+			//link_xyz
+			s_joint.insert(108,xyz_link);
+			//link_rpy
+			s_joint.insert(96,link_rpy);
+			//joint_xyz
+			s_joint.insert(84,xyz_joint);
+			//rpy
+			s_joint.insert(71,joint_rpy);
+  		//radius
+  		s_joint.insert(58,"0.1");
+  		//length
+  		s_joint.insert(48,length);
+  		//parent name
+  		s_joint.insert(38,to_string(i));
+  		//link name
+  		s_joint.insert(27,to_string(i+1));
+  		
+  		xacro_file<<s_joint<<endl;
+  	}else{
+  		cout<<"No prismatic joint implementation"<<endl;
+  		return -1;
+  	}
+  }
+  xacro_file<<"    <gazebo>"<<endl;
+  xacro_file<<"        <plugin name=\"gazebo_ros_control\" filename=\"libgazebo_ros_control.so\">"<<endl;
+  xacro_file<<"            <robotNamespace>/</robotNamespace>"<<endl;
+  xacro_file<<"        </plugin>"<<endl;
+  xacro_file<<"    </gazebo>"<<endl;
+  xacro_file<<"</robot>"<<endl;
+  
+  xacro_file.close();
+  
   return 0;
 }
 

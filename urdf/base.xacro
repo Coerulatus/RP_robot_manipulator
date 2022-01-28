@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
+
+<xacro:macro name="base" params="name">
+	
+		<link name="${name}">
+        <visual>
+            <geometry>
+                <box size="2 2 .1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="2 2 .1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5"/>
+            <inertia ixx="0.21" ixy="0" ixz="0" iyy="0.27" iyz="0" izz="0.10"/>
+        </inertial>
+    </link>
+    
+</xacro:macro>
+</robot>
+
