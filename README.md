@@ -11,3 +11,5 @@ To build the project you need to follow these commands:
 To launch gazebo:
 * ```roslaunch project_rp gazebo.launch```
 
+To launch executable:
+* ```rosrun project_rp make_manipulator```
