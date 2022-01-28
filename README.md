@@ -13,3 +13,5 @@ To launch gazebo:
 
 To launch executable:
 * ```rosrun project_rp make_manipulator```
+
+ATTENTION: DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
