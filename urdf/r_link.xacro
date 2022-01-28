@@ -6,7 +6,7 @@
 
     <!-- rpy (roll pitch yaw) describes rotation in radians -->
     <!-- xyz describes translation in meters -->
-    <link name="${prefix}_link">
+    <link name="${prefix}">
         <visual>
             <origin rpy="0 0 0" xyz="${link_xyz}"/> <!-- set the origin to 0 to recenter the link to the child_frame -->
             <geometry>
@@ -27,10 +27,10 @@
     </link>
 
 
-    <joint name="base_to_${prefix}" type="revolute">
+    <joint name="${parent}_to_${prefix}" type="continuous">
         <axis xyz="0 0 1"/>
         <parent link="${parent}"/>
-        <child link="${prefix}_link"/>
+        <child link="${prefix}"/>
         <origin rpy="${rpy}" xyz="${joint_xyz}"/> <!-- move the child_frame with respect to parent_frame -->
         <limit effort="30" velocity="1.0"/>
     </joint>
@@ -41,7 +41,7 @@
         <actuator name="${prefix}_motor">
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
-        <joint name="base_to_${prefix}">
+        <joint name="${parent}_to_${prefix}">
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
     </transmission>
