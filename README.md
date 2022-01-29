@@ -11,7 +11,11 @@ To build the project you need to follow these commands:
 To launch gazebo:
 * ```roslaunch project_rp gazebo.launch```
 
-To launch executable:
+To create manipulator's files from DH_params:
 * ```rosrun project_rp make_manipulator```
+
+To controll the joints:
+* ```rusrun project_rp set_joints```
+The program loops over the joints asking the value to set the current joint to. More than one value can be specified at a time. Use 's' to keep a joint still. Use 'q' to exit the program.
 
 ATTENTION: DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
