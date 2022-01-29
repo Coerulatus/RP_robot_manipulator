@@ -51,14 +51,19 @@ int main(int argc, char **argv) {
 		while(cin >> j_v){
 			if(j_v=="q")
 				break;
-			else if(j_v=="s")
+			else if(j_v=="s"){
 				cout << "Keeping joint "<<(j_idx%n_joints)+1<<" still"<<endl;
-			else{
-				msg.data = stof(j_v);
-				joints_pubs[j_idx%n_joints].publish(msg);
-				cout << "Setting position of joint " << (j_idx%n_joints)+1 << " to: "<<j_v<<endl;
+				++j_idx;
+			}else{
+				try{
+					msg.data = stof(j_v);
+					joints_pubs[j_idx%n_joints].publish(msg);
+					cout << "Setting position of joint " << (j_idx%n_joints)+1 << " to: "<<j_v<<endl;
+					++j_idx;
+				}catch( ... ){
+					cout << "Invalid argument" <<endl;
+				}
 			}
-			++j_idx;
 		}
 		break;
   }
