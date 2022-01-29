@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
   ifstream input;
   input.open("DH_params.txt");
   if(!input){
-  	input.open("./src/src_cpp/DH_params.txt");
+  	input.open("./src/RP_robot_manipulator/src_cpp/DH_params.txt");
   	if(!input){
   		cerr<<"Error: could not open DH_params.txt file. \n The file needs to be in the project folder or in the src/src_cpp folder."<<endl;
   		return -1;
