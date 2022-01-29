@@ -18,13 +18,13 @@
   </include>
 
 
-  <!-- Spawn our robot using urdf_spawner node -->
+  <!-- Spawn our robot using urdf_spawner node. z value is to avoid base flickering -->
   <node name="urdf_spawner"
         pkg="gazebo_ros"
         type="spawn_model"
         respawn="false"
         output="screen"
-        args="-z 1.0
+        args="-z 0.00001
               -unpause
               -urdf
               -model robot
