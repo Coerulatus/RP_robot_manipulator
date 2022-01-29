@@ -44,9 +44,7 @@
               l2_controller
               l3_controller
               l4_controller
-              l5_controller
-              l6_controller
-              l7_controller" />
+              l5_controller" />
 </launch>
 
 

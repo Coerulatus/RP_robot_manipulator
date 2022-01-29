@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
   		string joint_rpy;
   		string length;
   		if(i==0){
-  			j_type = "revolute"; 
+  			j_type = "continuous"; 
   		 	xyz_link = "0 0 "+to_string(ds[i]/2);
   		 	link_rpy = "0 0 0";
   		 	xyz_joint = "0 0 0";
@@ -92,14 +92,14 @@ int main(int argc, char** argv) {
 				else
 					length = to_string(ds[i]);
   		}else if(i==alphas.size()){
-  			j_type = "revolute"; //I wanted it to be fixed, ros doesn't like it
+  			j_type = "revolute"; //with no specified limits it's fixed
   			xyz_link = to_string(as[i-1]/2)+" 0 0";
   			link_rpy = "0 "+to_string(M_PI/2)+" 0";
   			xyz_joint = "0 0 0";
   			joint_rpy = to_string(alphas[i-1])+" 0 0";
   			length = to_string(as[i-1]);
   		}else{
-  			j_type = "revolute";
+  			j_type = "continuous";
   			xyz_link = "0 0 "+to_string(ds[i]/2);
   			link_rpy = "0 0 0";
   			xyz_joint = "0 0 "+to_string(ds[i-1]);

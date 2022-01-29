@@ -21,12 +21,3 @@ l4_controller:
 l5_controller:
   type: "position_controllers/JointPositionController"
   joint: l4_to_l5
-
-l6_controller:
-  type: "position_controllers/JointPositionController"
-  joint: l5_to_l6
-
-l7_controller:
-  type: "position_controllers/JointPositionController"
-  joint: l6_to_l7
-
