@@ -144,6 +144,40 @@ int main(int argc, char** argv) {
   
   xacro_file.close();
   
+  //gazebo file
+  ifstream g_template;
+  g_template.open("./src/RP_robot_manipulator/launch/gazebo_template.txt");
+  ofstream gazebo;
+  gazebo.open("./src/RP_robot_manipulator/launch/gazebo.launch");
+  int line = 1;
+  while(!g_template.eof()){
+  	if(line == 43){
+  		for(int i=0;i<alphas.size();++i)
+  			gazebo << "        l" << i+1 << "_controller" <<endl;
+  	}
+  	g_template.getline(l,256);
+  	gazebo << l <<endl;
+  	++line;
+  }
+  g_template.close();
+  gazebo.close();
+  	
+  //joints file
+  ofstream joints_file;
+	joints_file.open("./src/RP_robot_manipulator/config/joints.yaml");
+	joints_file << "joint_state_controller:" << endl;
+	joints_file << "  type: \"joint_state_controller/JointStateController\"" << endl;  
+	joints_file << "  publish_rate: 50" << endl;
+	for(int i=0;i<alphas.size();++i){
+		joints_file << "l" << i+1 << "_controller:" << endl;
+		joints_file << "  type: \"position_controllers/JointPositionController\"" << endl;
+		joints_file << "  joint: l" << i << "_to_l" << i+1 <<endl;
+	}
+
+	joints_file.close();
+
+  
+  
   return 0;
 }
 
