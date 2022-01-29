@@ -4,7 +4,9 @@ Academic year: 2021/2022
 
 To build the project you need to follow these commands:
 * ```mkdir -p project_folder/src```
-* ```cd project_folder```
+* ```cd project_folder/src```
+* ```git clone https://github.com/Coerulatus/RP_robot_manipulator.git```
+* ```cd ..```
 * ```catkin build project_rp```
 * ```source devel/setup.bash```
 
