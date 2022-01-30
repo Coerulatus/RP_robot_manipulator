@@ -4,12 +4,12 @@ joint_state_controller:
 l1_controller:
   type: "position_controllers/JointPositionController"
   joint: l0_to_l1
-l2_controller:
-  type: "position_controllers/JointPositionController"
-  joint: l1_to_l2
 l3_controller:
   type: "position_controllers/JointPositionController"
   joint: l2_to_l3
-l4_controller:
+l5_controller:
   type: "position_controllers/JointPositionController"
-  joint: l3_to_l4
+  joint: l4_to_l5
+l7_controller:
+  type: "position_controllers/JointPositionController"
+  joint: l6_to_l7

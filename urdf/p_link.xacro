@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
 
-<xacro:macro name="r_link" params="prefix parent length radius joint_rpy joint_xyz link_rpy link_xyz">
+<xacro:macro name="p_link" params="prefix parent length radius joint_rpy joint_xyz link_rpy link_xyz">
 
     <link name="${prefix}">
         <visual>
@@ -19,12 +19,12 @@
     </link>
 
 
-    <joint name="${parent}_to_${prefix}" type="continuous">
+    <joint name="${parent}_to_${prefix}" type="prismatic">
         <axis xyz="0 0 1"/>
         <parent link="${parent}"/>
         <child link="${prefix}"/>
-        <origin rpy="${joint_rpy}" xyz="${joint_xyz}"/> 
-        <limit effort="30" velocity="1.0"/>
+        <origin rpy="${joint_rpy}" xyz="${joint_xyz}"/> <!-- move the child_frame with respect to parent_frame -->
+        <limit upper="1" effort="30" velocity="1.0"/>
     </joint>
 
 
@@ -41,4 +41,3 @@
 
 </xacro:macro>
 </robot>
-

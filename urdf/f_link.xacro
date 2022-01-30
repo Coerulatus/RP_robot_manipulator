@@ -11,12 +11,6 @@
                 <cylinder length="${length}" radius="${radius}"/>
             </geometry>
         </visual>
-        <collision>
-            <origin rpy="${link_rpy}" xyz="${link_xyz}"/>
-            <geometry>
-                <cylinder length="${length}" radius="${radius}"/>
-            </geometry>
-        </collision>
         <inertial>
             <origin rpy="${link_rpy}" xyz="${link_xyz}"/>
             <mass value="1"/>

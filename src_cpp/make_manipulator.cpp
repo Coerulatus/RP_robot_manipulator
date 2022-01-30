@@ -40,8 +40,8 @@ int main(int argc, char** argv) {
 
   	// check d_i for qi  	
   	if(s3[0]=='q'){
-  		// initialize q values as zero
-  		ds.push_back(0);
+  		// initialize q values as 0 for prismatic joint
+  		ds.push_back(0); 
   		is_joint_revolute.push_back(0);
   	}else{
   		ds.push_back(stof(s3));
@@ -49,19 +49,16 @@ int main(int argc, char** argv) {
 
   	//check theta_i for qi
   	if(s4[0]=='q'){
-  		// initialize q values as zero
+  		// initialize q values as 0 for revolute joints
   		thetas.push_back(0);
   		is_joint_revolute.push_back(1);
   	}else{
   		thetas.push_back(stof(s4));
   	}
   	
-  	//cout<<alphas.back()<<' '<<as.back()<<' '<<ds.back()<<' '<<thetas.back()<<endl;
-  	
   	input>>s1>>s2>>s3>>s4;
   }
   input.close();
-  is_joint_revolute.push_back(1);
   
   //make xacro file
   ofstream xacro_file;
@@ -69,23 +66,23 @@ int main(int argc, char** argv) {
   xacro_file<<"<?xml version=\"1.0\"?>"<<endl;
   xacro_file<<"<robot xmlns:xacro=\"http://www.ros.org/wiki/xacro\" name=\"my_robot\">"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/r_link.xacro\" />"<<endl;
+  xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/p_link.xacro\" />"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/f_link.xacro\" />"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/base.xacro\" />"<<endl;
   xacro_file<<"    <xacro:base name=\"l0\" />"<<endl;
   
-  string j_type;
 	string xyz_link;
 	string link_rpy;
 	string xyz_joint;
 	string joint_rpy;
 	string length;
-	
+	int j_idx = 0;
+	vector<bool> fixed_joint;
   for(int i=0;i<alphas.size();++i){
   	if(is_joint_revolute[i]){
-  		string s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\" type=\"\"/>";
+  		string s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
 
   		if(i==0){
-  			j_type = "continuous"; 
   		 	xyz_link = "0 0 "+to_string(ds[i]/2);
   		 	link_rpy = "0 0 0";
   		 	xyz_joint = "0 0 0";
@@ -95,8 +92,7 @@ int main(int argc, char** argv) {
 				else
 					length = to_string(ds[i]);
   		}else{
-  			j_type = "continuous";
-  			xyz_link = to_string(as[i-1])+" 0 "+to_string(ds[i]/2);
+  			xyz_link = "0 0 "+to_string(ds[i]/2);
   			link_rpy = "0 0 0";
   			xyz_joint = to_string(as[i-1])+" 0 "+to_string(ds[i-1]);
   			joint_rpy = to_string(alphas[i-1])+" 0 0";
@@ -106,8 +102,6 @@ int main(int argc, char** argv) {
 					length = to_string(ds[i]);
   		}
   		
-			//type
-			s_joint.insert(116,j_type);
 			//link_xyz
 			s_joint.insert(108,xyz_link);
 			//link_rpy
@@ -121,16 +115,74 @@ int main(int argc, char** argv) {
   		//length
   		s_joint.insert(48,length);
   		//parent name
-  		s_joint.insert(38,to_string(i));
+  		s_joint.insert(38,to_string(j_idx));
   		//link name
-  		s_joint.insert(27,to_string(i+1));
+  		s_joint.insert(27,to_string(j_idx+1));
   		
   		xacro_file<<s_joint<<endl;
+  		++j_idx;
+  		fixed_joint.push_back(0);
   	}else{
-  		cout<<"No prismatic joint implementation"<<endl;
-  		return -1;
+  		string s_joint = "    <xacro:p_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+			if(i==0){
+  		 	xyz_link = "0 0 "+to_string(ds[i]/2-1);
+  		 	link_rpy = "0 0 0";
+  		 	xyz_joint = "0 0 0";
+  		 	joint_rpy = "0 0 0";
+  		}else{
+  			xyz_link = "0 0 "+to_string(ds[i]-0.5);
+  			link_rpy = "0 0 0";
+  			xyz_joint = to_string(as[i-1])+" 0 "+to_string(ds[i-1]);
+  			joint_rpy = to_string(alphas[i-1])+" 0 0";
+  		}
+  		
+  		//link_xyz
+			s_joint.insert(108,xyz_link);
+			//link_rpy
+			s_joint.insert(96,link_rpy);
+			//joint_xyz
+			s_joint.insert(84,xyz_joint);
+			//rpy
+			s_joint.insert(71,joint_rpy);
+  		//radius
+  		s_joint.insert(58,"0.08");
+  		//length - prismatic joint has fixed limit of 1, fix length to that
+  		s_joint.insert(48,"1.0");
+  		//parent name
+  		s_joint.insert(38,to_string(j_idx));
+  		//link name
+  		s_joint.insert(27,to_string(j_idx+1));
+  		
+  		xacro_file<<s_joint<<endl;
+  		++j_idx;
+  		fixed_joint.push_back(0);
+  	}
+  	// adding fixed links for shoulders
+  	if(!as[i]==0){
+  		string s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+			xyz_link = to_string(as[i]/2)+" 0 "+to_string(ds[i]);
+			link_rpy = "0 "+to_string(M_PI/2)+" 0";
+			length = to_string(as[i]);
+			
+			//link_xyz
+			s_joint.insert(82,xyz_link);
+			//link_rpy
+			s_joint.insert(70,link_rpy);
+			//radius
+			s_joint.insert(58,"0.1");
+			//length
+			s_joint.insert(48,length);
+			//parent name
+			s_joint.insert(38,to_string(j_idx));
+			//link name
+			s_joint.insert(27,to_string(j_idx+1));
+			
+			xacro_file<<s_joint<<endl;
+			++j_idx;
+			fixed_joint.push_back(1);
   	}
   }
+  
   // final link, it's a fixed link
   if(is_joint_revolute.back()){
 		string s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" link_rpy=\"\" link_xyz=\"\"/>";
@@ -147,15 +199,14 @@ int main(int argc, char** argv) {
 		//length
 		s_joint.insert(48,length);
 		//parent name
-		s_joint.insert(38,to_string(alphas.size()));
+		s_joint.insert(38,to_string(j_idx));
 		//link name
-		s_joint.insert(27,to_string(alphas.size()+1));
+		s_joint.insert(27,to_string(j_idx+1));
 		
 		xacro_file<<s_joint<<endl;
-	}else{
-  	cout<<"No prismatic joint implementation for last link"<<endl;
-  	return -1;
-  }
+		++j_idx;
+		fixed_joint.push_back(1);
+	}
   
   xacro_file<<"    <gazebo>"<<endl;
   xacro_file<<"        <plugin name=\"gazebo_ros_control\" filename=\"libgazebo_ros_control.so\">"<<endl;
@@ -174,8 +225,10 @@ int main(int argc, char** argv) {
   int line = 1;
   while(!g_template.eof()){
   	if(line == 43){
-  		for(int i=0;i<alphas.size();++i)
-  			gazebo << "        l" << i+1 << "_controller" <<endl;
+  		for(int i=0;i<j_idx;++i){
+  			if(!fixed_joint[i])
+  				gazebo << "        l" << i+1 << "_controller" <<endl;
+  		}
   	}
   	g_template.getline(l,256);
   	gazebo << l <<endl;
@@ -190,10 +243,12 @@ int main(int argc, char** argv) {
 	joints_file << "joint_state_controller:" << endl;
 	joints_file << "  type: \"joint_state_controller/JointStateController\"" << endl;  
 	joints_file << "  publish_rate: 50" << endl;
-	for(int i=0;i<alphas.size();++i){
-		joints_file << "l" << i+1 << "_controller:" << endl;
-		joints_file << "  type: \"position_controllers/JointPositionController\"" << endl;
-		joints_file << "  joint: l" << i << "_to_l" << i+1 <<endl;
+	for(int i=0;i<j_idx;++i){
+		if(!fixed_joint[i]){
+			joints_file << "l" << i+1 << "_controller:" << endl;
+			joints_file << "  type: \"position_controllers/JointPositionController\"" << endl;
+			joints_file << "  joint: l" << i << "_to_l" << i+1 <<endl;
+		}
 	}
 
 	joints_file.close();
