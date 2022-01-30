@@ -65,22 +65,25 @@ int main(int argc, char** argv) {
   
   //make xacro file
   ofstream xacro_file;
-  xacro_file.open("./src/urdf/main.xacro");
+  xacro_file.open("./src/RP_robot_manipulator/urdf/main.xacro");
   xacro_file<<"<?xml version=\"1.0\"?>"<<endl;
   xacro_file<<"<robot xmlns:xacro=\"http://www.ros.org/wiki/xacro\" name=\"my_robot\">"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/r_link.xacro\" />"<<endl;
+  xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/f_link.xacro\" />"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/base.xacro\" />"<<endl;
   xacro_file<<"    <xacro:base name=\"l0\" />"<<endl;
-  for(int i=0;i<alphas.size()+1;++i){
+  
+  string j_type;
+	string xyz_link;
+	string link_rpy;
+	string xyz_joint;
+	string joint_rpy;
+	string length;
+	
+  for(int i=0;i<alphas.size();++i){
   	if(is_joint_revolute[i]){
   		string s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\" type=\"\"/>";
-  		
-  		string j_type;
-  		string xyz_link;
-  		string link_rpy;
-  		string xyz_joint;
-  		string joint_rpy;
-  		string length;
+
   		if(i==0){
   			j_type = "continuous"; 
   		 	xyz_link = "0 0 "+to_string(ds[i]/2);
@@ -91,18 +94,11 @@ int main(int argc, char** argv) {
 					length = "0.2";
 				else
 					length = to_string(ds[i]);
-  		}else if(i==alphas.size()){
-  			j_type = "revolute"; //with no specified limits it's fixed
-  			xyz_link = to_string(as[i-1]/2)+" 0 0";
-  			link_rpy = "0 "+to_string(M_PI/2)+" 0";
-  			xyz_joint = "0 0 0";
-  			joint_rpy = to_string(alphas[i-1])+" 0 0";
-  			length = to_string(as[i-1]);
   		}else{
   			j_type = "continuous";
-  			xyz_link = "0 0 "+to_string(ds[i]/2);
+  			xyz_link = to_string(as[i-1])+" 0 "+to_string(ds[i]/2);
   			link_rpy = "0 0 0";
-  			xyz_joint = "0 0 "+to_string(ds[i-1]);
+  			xyz_joint = to_string(as[i-1])+" 0 "+to_string(ds[i-1]);
   			joint_rpy = to_string(alphas[i-1])+" 0 0";
   			if(ds[i]==0)
 					length = "0.2";
@@ -135,6 +131,32 @@ int main(int argc, char** argv) {
   		return -1;
   	}
   }
+  // final link, it's a fixed link
+  if(is_joint_revolute.back()){
+		string s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+		xyz_link = to_string(as.back()/2)+" 0 "+to_string(ds.back());
+		link_rpy = "0 "+to_string(M_PI/2)+" 0";
+		length = to_string(as.back());
+		
+		//link_xyz
+		s_joint.insert(82,xyz_link);
+		//link_rpy
+		s_joint.insert(70,link_rpy);
+		//radius
+		s_joint.insert(58,"0.1");
+		//length
+		s_joint.insert(48,length);
+		//parent name
+		s_joint.insert(38,to_string(alphas.size()));
+		//link name
+		s_joint.insert(27,to_string(alphas.size()+1));
+		
+		xacro_file<<s_joint<<endl;
+	}else{
+  	cout<<"No prismatic joint implementation for last link"<<endl;
+  	return -1;
+  }
+  
   xacro_file<<"    <gazebo>"<<endl;
   xacro_file<<"        <plugin name=\"gazebo_ros_control\" filename=\"libgazebo_ros_control.so\">"<<endl;
   xacro_file<<"            <robotNamespace>/</robotNamespace>"<<endl;
