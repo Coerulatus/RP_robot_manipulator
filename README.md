@@ -2,6 +2,7 @@
 Repository for my project for the course Robot Programming.
 Academic year: 2021/2022
 
+### Instructions to use the program
 To build the project you need to follow these commands:
 * ```mkdir -p project_folder/src```
 * ```cd project_folder/src```
@@ -21,4 +22,18 @@ To controll the joints:
 
 The program loops over the joints asking the value to set the current joint to. More than one value can be specified at a time. Use 's' to keep a joint still. Use 'q' to exit the program.
 
-ATTENTION: DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
+### DH_params.txt explanation
+DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
+
+The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The scale parameter changes the default value of the joint radius.
+
+The p_limit parameter sets the limit for the prismatic joints of the model.
+
+The third line is there to separate the file but is not used by the program; it needs to be kept for the program to work properly.
+
+For the *Denavit–Hartenberg* parameters the conventions used are:
+* the first joint is positioned on [0,0,0] and has the z-axis pointing upwards
+* if the last joint is revolute then the last reference frame needs to have the x-axis pointing in the direction of the link
+* if the last joint is prismatic then the last referece frame needs to have the z-axis pointing in the direction of the link
+
+The projects comes with an example file already present in the src_cpp folder.
