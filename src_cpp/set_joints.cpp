@@ -4,6 +4,7 @@
 #include <string>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
+#include "utils_control.h"
 
 using namespace std;
 
@@ -13,34 +14,9 @@ int main(int argc, char **argv) {
 	
 	ros::NodeHandle n;
 	
-	// get number of joints directly from DH_params
-	ifstream input;
-  input.open("DH_params.txt");
-  if(!input){
-  	input.open("./src/RP_robot_manipulator/src_cpp/DH_params.txt");
-  	if(!input){
-  		cerr<<"Error: could not open DH_params.txt file. \n The file needs to be in the project folder or in the src/src_cpp folder."<<endl;
-  		return -1;
-  	}
-  }
-  
-  int n_joints = 0;
-	string s1, s2, s3, s4;
-	vector<int> moving_joint_idxs;
-  
-  input>>s1>>s2; //scale
-  input>>s1>>s2; //p_limit
-  //ignore line
-  input>>s1;
-  
-  input>>s1>>s2>>s3>>s4;
-  while(!input.eof()){
-  	moving_joint_idxs.push_back(n_joints+1);
-  	if(!stof(s2)==0)
-  		++n_joints;
-  	input>>s1>>s2>>s3>>s4;
-  	++n_joints;
-  }
+  vector<int> moving_joint_idxs;
+  if(get_joints_idxs(moving_joint_idxs)==-1)
+  	return -1;
   int n_moving_joints = moving_joint_idxs.size();
   
   vector<ros::Publisher> joints_pubs;
