@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
 			//link_rpy
 			s_joint.insert(70,link_rpy);
 			//radius
-			s_joint.insert(58,"0.1");
+			s_joint.insert(58,to_string(0.1*scale));
 			//length
 			s_joint.insert(48,length);
 			//parent name
@@ -204,7 +204,7 @@ int main(int argc, char** argv) {
 		//link_rpy
 		s_joint.insert(70,link_rpy);
 		//radius
-		s_joint.insert(58,"0.1");
+		s_joint.insert(58,to_string(0.1*scale));
 		//length
 		s_joint.insert(48,length);
 		//parent name
