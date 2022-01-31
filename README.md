@@ -25,7 +25,7 @@ The program loops over the joints asking the value to set the current joint to. 
 ### DH_params.txt explanation
 DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
 
-The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The scale parameter changes the default value of the joint radius.
+The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The scale parameter changes the default value of the joint radius, by multiplying 0.1 by scale.
 
 The p_limit parameter sets the limit for the prismatic joints of the model.
 
