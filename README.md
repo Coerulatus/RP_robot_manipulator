@@ -22,6 +22,11 @@ To controll the joints:
 
 The program loops over the joints asking the value to set the current joint to. More than one value can be specified at a time. Use 's' to keep a joint still. Use 'q' to exit the program.
 
+To control robot position:
+* ```rosrun project_rp inverse_kinematics```
+
+The program asks for the x,y,z coordinates that the robot end effector should reach. A gradient method is used so the robot might stop close to singularities or might try an unreachable configuration. Joint limits are not checked. The initial configuration is the current robot pose.
+
 ### DH_params.txt explanation
 DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
 
