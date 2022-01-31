@@ -34,6 +34,6 @@ The third line is there to separate the file but is not used by the program; it 
 For the *Denavit–Hartenberg* parameters the conventions used are:
 * the first joint is positioned on [0,0,0] and has the z-axis pointing upwards
 * if the last joint is revolute then the last reference frame needs to have the x-axis pointing in the direction of the link
-* if the last joint is prismatic then the last referece frame needs to have the z-axis pointing in the direction of the link
+* if the last joint is prismatic then the last reference frame needs to have the z-axis pointing in the direction of the link
 
 The projects comes with an example file already present in the src_cpp folder.
