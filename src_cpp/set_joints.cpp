@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
 	vector<int> moving_joint_idxs;
   char l[256];
   //ignore first line
+  input>>s1>>s2; //scale
+  input>>s1>>s2; //p_limit
   input.getline(l,256);
   input>>s1>>s2>>s3>>s4;
   while(!input.eof()){

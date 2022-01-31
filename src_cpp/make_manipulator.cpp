@@ -22,10 +22,15 @@ int main(int argc, char** argv) {
   string s1, s2, s3, s4;
   vector<float> alphas,as,ds,thetas;
   vector<bool> is_joint_revolute;
+  float scale;
+  float p_limit;
   
   //ignore first line
+  input>>s1>>s2;
+  scale = stof(s2);
+  input>>s1>>s2;
+  p_limit = stof(s2);
   input.getline(l,256);
-  
   input>>s1>>s2>>s3>>s4;
   while(!input.eof()){
   	// check alpha_i for +-pi/2
@@ -33,6 +38,10 @@ int main(int argc, char** argv) {
   		alphas.push_back(M_PI/2);
   	else if(s1=="-pi/2")
   		alphas.push_back(-M_PI/2);
+  	else if(s1=="-pi")
+  		alphas.push_back(-M_PI);
+  	else if(s1=="pi")
+  		alphas.push_back(M_PI);
   	else
   		alphas.push_back(stof(s1));
 
@@ -58,6 +67,7 @@ int main(int argc, char** argv) {
   	
   	input>>s1>>s2>>s3>>s4;
   }
+  	
   input.close();
   
   //make xacro file
@@ -111,7 +121,7 @@ int main(int argc, char** argv) {
 			//rpy
 			s_joint.insert(71,joint_rpy);
   		//radius
-  		s_joint.insert(58,"0.1");
+  		s_joint.insert(58,to_string(0.1*scale));
   		//length
   		s_joint.insert(48,length);
   		//parent name
@@ -130,7 +140,7 @@ int main(int argc, char** argv) {
   		 	xyz_joint = "0 0 0";
   		 	joint_rpy = "0 0 0";
   		}else{
-  			xyz_link = "0 0 "+to_string(ds[i]-0.5);
+  			xyz_link = "0 0 "+to_string(ds[i]-p_limit/2);
   			link_rpy = "0 0 0";
   			xyz_joint = to_string(as[i-1])+" 0 "+to_string(ds[i-1]);
   			joint_rpy = to_string(alphas[i-1])+" 0 0";
@@ -145,9 +155,9 @@ int main(int argc, char** argv) {
 			//rpy
 			s_joint.insert(71,joint_rpy);
   		//radius
-  		s_joint.insert(58,"0.08");
-  		//length - prismatic joint has fixed limit of 1, fix length to that
-  		s_joint.insert(48,"1.0");
+  		s_joint.insert(58,to_string(0.08*scale));
+  		//length - prismatic joint has limit of p_limit, fix length to that
+  		s_joint.insert(48,to_string(p_limit));
   		//parent name
   		s_joint.insert(38,to_string(j_idx));
   		//link name
