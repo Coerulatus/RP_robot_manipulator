@@ -1,4 +1,3 @@
-#include <Eigen/Geometry>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -18,19 +17,19 @@ int main(int argc, char** argv) {
   	}
   }
   
-  char l[256];
   string s1, s2, s3, s4;
   vector<float> alphas,as,ds,thetas;
   vector<bool> is_joint_revolute;
+  char l[256];
   float scale;
   float p_limit;
   
-  //ignore first line
   input>>s1>>s2;
   scale = stof(s2);
   input>>s1>>s2;
   p_limit = stof(s2);
-  input.getline(l,256);
+  //ignore line
+  input>>s1;
   input>>s1>>s2>>s3>>s4;
   while(!input.eof()){
   	// check alpha_i for +-pi/2

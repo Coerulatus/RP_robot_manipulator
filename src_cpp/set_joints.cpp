@@ -27,11 +27,12 @@ int main(int argc, char **argv) {
   int n_joints = 0;
 	string s1, s2, s3, s4;
 	vector<int> moving_joint_idxs;
-  char l[256];
-  //ignore first line
+  
   input>>s1>>s2; //scale
   input>>s1>>s2; //p_limit
-  input.getline(l,256);
+  //ignore line
+  input>>s1;
+  
   input>>s1>>s2>>s3>>s4;
   while(!input.eof()){
   	moving_joint_idxs.push_back(n_joints+1);
