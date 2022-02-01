@@ -1,4 +1,6 @@
-#pragma once#include <fstream>
+#pragma once
+
+#include <fstream>
 
 #include <iostream>
 
