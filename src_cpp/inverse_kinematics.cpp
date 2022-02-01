@@ -97,6 +97,7 @@ int main(int argc, char ** argv) {
           break;
         }
       }
+      cout << "Final distance: " << to_string(error) << endl;
       for (int i = 0; i < n_moving_joints; ++i) {
         if (dh_params.is_joint_revolute[i])
           msg.data = dh_params.thetas[i];
