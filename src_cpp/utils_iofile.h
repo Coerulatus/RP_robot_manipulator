@@ -37,6 +37,8 @@ robot_params read_dh_params(void){
   dh_params.p_limit = stof(s2);
   //ignore line
   input>>s1;
+  char l[256];
+  input.getline(l,256);
   
   input>>s1>>s2>>s3>>s4;
   while(!input.eof()){
