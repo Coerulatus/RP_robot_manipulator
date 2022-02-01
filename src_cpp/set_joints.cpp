@@ -4,7 +4,7 @@
 #include <string>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
-#include "utils_control.h"
+#include "utils_iofile.h"
 
 using namespace std;
 
@@ -14,9 +14,14 @@ int main(int argc, char **argv) {
 	
 	ros::NodeHandle n;
 	
-  vector<int> moving_joint_idxs;
-  if(get_joints_idxs(moving_joint_idxs)==-1)
-  	return -1;
+  // read DH_params.txt
+  robot_params dh_params(read_dh_params());
+  
+	vector<int> moving_joint_idxs;
+	for(int i=0;i<dh_params.fixed_joints.size();++i){
+		if(!dh_params.fixed_joints[i])
+			moving_joint_idxs.push_back(i+1);
+	}
   int n_moving_joints = moving_joint_idxs.size();
   
   vector<ros::Publisher> joints_pubs;
@@ -27,8 +32,6 @@ int main(int argc, char **argv) {
 		joints_pubs.push_back(n.advertise<std_msgs::Float64>(topic, 100));
 		j_values.push_back("0");
   }
-  /*for(int i=0;i<fixed_joint.size();i++)
-  	cout<<i<<" "<<fixed_joint[i]<<endl;*/
   cout << "Waiting for the values for the joints. \nUse s to keep the joint still.\nType q to exit." << endl; 
   int j_idx=0;
   string j_v;

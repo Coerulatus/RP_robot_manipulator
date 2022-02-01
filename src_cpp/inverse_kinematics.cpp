@@ -7,7 +7,6 @@
 #include <string>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
-#include "utils_control.h"
 #include "utils_kinematics.h"
 #include "utils_iofile.h"
 
@@ -18,9 +17,14 @@ int main(int argc, char** argv) {
 	ros::init(argc, argv, "inverse_kinematics_node");
 	ros::NodeHandle n;
 	
+	// read DH_params.txt
+  robot_params dh_params(read_dh_params());
+  
 	vector<int> moving_joint_idxs;
-  if(get_joints_idxs(moving_joint_idxs)==-1)
-  	return -1;
+	for(int i=0;i<dh_params.fixed_joints.size();++i){
+		if(!dh_params.fixed_joints[i])
+			moving_joint_idxs.push_back(i+1);
+	}
   int n_moving_joints = moving_joint_idxs.size();
   
   vector<ros::Publisher> joints_pubs;
@@ -29,9 +33,6 @@ int main(int argc, char** argv) {
 		topic = "l"+to_string(moving_joint_idxs[i])+"_controller/command";
 		joints_pubs.push_back(n.advertise<std_msgs::Float64>(topic, 100));
   }
-  
-  // read DH_params.txt
-  robot_params dh_params(read_dh_params());
   
   MatrixXf J;
   Vector3f current_p;
