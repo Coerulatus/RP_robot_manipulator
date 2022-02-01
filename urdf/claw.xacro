@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
+
+<xacro:macro name="claw" params="parent xyz scale">
+	<link name="claw">
+        <visual>
+            <origin rpy="0 0 0" xyz="${xyz}"/> 
+            <geometry>
+                <mesh filename="package://project_rp/urdf/Claw.stl" scale="${scale}"/>
+            </geometry>
+        </visual>
+    </link>
+
+
+    <joint name="${parent}_to_claw" type="fixed">
+        <parent link="${parent}"/>
+        <child link="claw"/>
+        <dynamics damping="0.5" friction="0.0"/>
+    </joint>
+
+
+</xacro:macro>
+</robot>
+

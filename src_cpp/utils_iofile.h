@@ -94,6 +94,7 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/p_link.xacro\" />"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/f_link.xacro\" />"<<endl;
   xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/base.xacro\" />"<<endl;
+  xacro_file<<"    <xacro:include filename=\"$(find project_rp)/urdf/claw.xacro\" />"<<endl;
   xacro_file<<"    <xacro:base name=\"l0\" />"<<endl;
   
   //adding links
@@ -102,11 +103,13 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
 	string xyz_joint;
 	string joint_rpy;
 	string length;
+	string s_joint;
+	string s_scale;
 	int j_idx = 0;
   for(int i=0;i<alphas.size();++i){
   	if(is_joint_revolute[i]){
   		//revolute joints use r_link macro
-  		string s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+  		s_joint = "    <xacro:r_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
 
   		if(i==0){
   		 	xyz_link = "0 0 "+to_string(ds[i]/2);
@@ -150,7 +153,7 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
   		++j_idx;
   	}else{
   		//prismatic joints use p_link macro
-  		string s_joint = "    <xacro:p_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+  		s_joint = "    <xacro:p_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
 			if(i==0){
   		 	xyz_link = "0 0 "+to_string(ds[i]/2-1);
   		 	link_rpy = "0 0 0";
@@ -187,15 +190,18 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
   	// adding fixed links for shoulders, otherwise when you have a shoulder the link floats. Just visual
   	if(!as[i]==0){
   		// fixed links use f_link macro
-  		string s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+  		s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
 			xyz_link = to_string(as[i]/2)+" 0 "+to_string(ds[i]);
+			xyz_joint = "0 0 0";
 			link_rpy = "0 "+to_string(M_PI/2)+" 0";
 			length = to_string(as[i]);
 			
 			//link_xyz
-			s_joint.insert(82,xyz_link);
+			s_joint.insert(95,xyz_link);
 			//link_rpy
-			s_joint.insert(70,link_rpy);
+			s_joint.insert(83,link_rpy);
+			//joint_xyz
+			s_joint.insert(71,xyz_joint);
 			//radius
 			s_joint.insert(58,to_string(0.1*scale));
 			//length
@@ -213,15 +219,18 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
   
   // final link is a fixed link, it's needed if joint is revolute, if it's prismatic the end effector is on the link's end
   if(is_joint_revolute.back()){
-		string s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" link_rpy=\"\" link_xyz=\"\"/>";
-		xyz_link = to_string(as.back()/2)+" 0 "+to_string(ds.back());
+		s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
+		xyz_joint = to_string(as.back())+" 0 "+to_string(ds.back());
+		xyz_link = to_string(-as.back()/2)+" 0 0";
 		link_rpy = "0 "+to_string(M_PI/2)+" 0";
 		length = to_string(as.back());
 		
 		//link_xyz
-		s_joint.insert(82,xyz_link);
+		s_joint.insert(95,xyz_link);
 		//link_rpy
-		s_joint.insert(70,link_rpy);
+		s_joint.insert(83,link_rpy);
+		//joint_xyz
+		s_joint.insert(71,xyz_joint);
 		//radius
 		s_joint.insert(58,to_string(0.1*scale));
 		//length
@@ -235,6 +244,23 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
 		xacro_file<<s_joint<<endl;
 		++j_idx;
 	}
+	// add claw
+	s_joint = "    <xacro:claw parent=\"l\" xyz=\"\" scale=\"\"/>";
+	float x_offset = 0.642; //model is not centered in 0,0,0
+	float scale_default = 0.015; //when manipulator scale is 1 this is the right scale for the claw
+	s_scale = to_string(scale_default*scale)+" "+to_string(scale_default*scale)+" "+to_string(scale_default*scale);
+	xyz_link = to_string(x_offset*scale)+" 0 0";
+	
+	//scale
+	s_joint.insert(41,s_scale);
+	//link_xyz
+	s_joint.insert(32,xyz_link);
+	//oarent
+	s_joint.insert(25,to_string(j_idx));
+	
+	// write claw to file
+	xacro_file<<s_joint<<endl;
+	++j_idx;
   
   // tail of main.xacro
   xacro_file<<"    <gazebo>"<<endl;
