@@ -77,7 +77,16 @@ robot_params read_dh_params(void) {
       dh_params.thetas.push_back(0);
       dh_params.is_joint_revolute.push_back(1);
     } else {
-      dh_params.thetas.push_back(stof(s4));
+      if (s4 == "pi/2")
+		    dh_params.thetas.push_back(M_PI / 2);
+		  else if (s4 == "-pi/2")
+		    dh_params.thetas.push_back(-M_PI / 2);
+		  else if (s4 == "-pi")
+		    dh_params.thetas.push_back(-M_PI);
+		  else if (s4 == "pi")
+		    dh_params.thetas.push_back(M_PI);
+		  else
+		    dh_params.thetas.push_back(stof(s4));
     }
 
     input >> s1 >> s2 >> s3 >> s4;
@@ -161,7 +170,7 @@ void make_main_xacro(vector < bool > & is_joint_revolute, vector < float > & alp
       //prismatic joints use p_link macro
       s_joint = "    <xacro:p_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_rpy=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
       if (i == 0) {
-        xyz_link = "0 0 " + to_string(ds[i] / 2 - 1);
+        xyz_link = "0 0 " + to_string((ds[i]-p_limit)/2);
         link_rpy = "0 0 0";
         xyz_joint = "0 0 0";
         joint_rpy = "0 0 0";
