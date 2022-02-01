@@ -9,6 +9,7 @@
 #include "std_msgs/Float64.h"
 #include "utils_control.h"
 #include "utils_kinematics.h"
+#include "utils_iofile.h"
 
 using namespace std;
 using namespace Eigen;
@@ -29,66 +30,8 @@ int main(int argc, char** argv) {
 		joints_pubs.push_back(n.advertise<std_msgs::Float64>(topic, 100));
   }
   
-  ifstream input;
-  input.open("DH_params.txt");
-  if(!input){
-  	input.open("./src/RP_robot_manipulator/src_cpp/DH_params.txt");
-  	if(!input){
-  		cerr<<"Error: could not open DH_params.txt file. \n The file needs to be in the project folder or in the src/src_cpp folder."<<endl;
-  		return -1;
-  	}
-  }
-  
-  string s1, s2, s3, s4;
-  vector<float> alphas,as,ds,thetas;
-  vector<bool> is_joint_revolute;
-  float scale;
-  float p_limit;
-  
-  input>>s1>>s2;
-  scale = stof(s2);
-  input>>s1>>s2;
-  p_limit = stof(s2);
-  //ignore line
-  input>>s1;
-  input>>s1>>s2>>s3>>s4;
-  while(!input.eof()){
-  	// check alpha_i for +-pi/2
-  	if(s1=="pi/2")
-  		alphas.push_back(M_PI/2);
-  	else if(s1=="-pi/2")
-  		alphas.push_back(-M_PI/2);
-  	else if(s1=="-pi")
-  		alphas.push_back(-M_PI);
-  	else if(s1=="pi")
-  		alphas.push_back(M_PI);
-  	else
-  		alphas.push_back(stof(s1));
-
-  	as.push_back(stof(s2));
-
-  	// check d_i for qi  	
-  	if(s3[0]=='q'){
-  		// initialize q values as 0 for prismatic joint
-  		ds.push_back(0); 
-  		is_joint_revolute.push_back(0);
-  	}else{
-  		ds.push_back(stof(s3));
-  	}
-
-  	//check theta_i for qi
-  	if(s4[0]=='q'){
-  		// initialize q values as 0 for revolute joints
-  		thetas.push_back(0);
-  		is_joint_revolute.push_back(1);
-  	}else{
-  		thetas.push_back(stof(s4));
-  	}
-  	
-  	input>>s1>>s2>>s3>>s4;
-  }
-  	
-  input.close();
+  // read DH_params.txt
+  robot_params dh_params(read_dh_params());
   
   MatrixXf J;
   Vector3f current_p;
@@ -99,6 +42,7 @@ int main(int argc, char** argv) {
   VectorXf delta_q;
   cout << "Waiting for desired coordinates.\nType q to exit."<<endl;
   int n_iter;
+  string s1,s2,s3;
   
   std_msgs::Float64 msg;
   while(ros::ok()){
@@ -115,21 +59,21 @@ int main(int argc, char** argv) {
 			desired_p(0) = stof(s1);
 			desired_p(1) = stof(s2);
 			desired_p(2) = stof(s3);
-			J = jacobian(is_joint_revolute,alphas,as,ds,thetas);
-			current_p = direct_kinematics(alphas,as,ds,thetas);
+			J = jacobian(dh_params.is_joint_revolute,dh_params.alphas,dh_params.as,dh_params.ds,dh_params.thetas);
+			current_p = direct_kinematics(dh_params.alphas,dh_params.as,dh_params.ds,dh_params.thetas);
 			error = euclidean_distance(current_p,desired_p);
 			error_prev = error;
 			n_iter = 0;
 			while(error>1e-4){
 				delta_q = conv_rate*J.transpose()*(desired_p-current_p);
 				for(int i=0;i<delta_q.size();++i){
-					if(is_joint_revolute[i])
-						thetas[i] += delta_q(i);
+					if(dh_params.is_joint_revolute[i])
+						dh_params.thetas[i] += delta_q(i);
 					else
-						ds[i] += delta_q(i);
+						dh_params.ds[i] += delta_q(i);
 				}
-				J = jacobian(is_joint_revolute,alphas,as,ds,thetas);
-				current_p = direct_kinematics(alphas,as,ds,thetas);
+				J = jacobian(dh_params.is_joint_revolute,dh_params.alphas,dh_params.as,dh_params.ds,dh_params.thetas);
+				current_p = direct_kinematics(dh_params.alphas,dh_params.as,dh_params.ds,dh_params.thetas);
 				error = euclidean_distance(current_p,desired_p);
 				if(error_prev<error)
 					conv_rate /= 2;
@@ -143,10 +87,10 @@ int main(int argc, char** argv) {
 				}
 			}
 			for(int i=0;i<n_moving_joints;++i){
-				if(is_joint_revolute[i])
-					msg.data = thetas[i];
+				if(dh_params.is_joint_revolute[i])
+					msg.data = dh_params.thetas[i];
 				else
-					msg.data = ds[i];
+					msg.data = dh_params.ds[i];
 				joints_pubs[i].publish(msg);
 			}
 		}catch( ... ){
