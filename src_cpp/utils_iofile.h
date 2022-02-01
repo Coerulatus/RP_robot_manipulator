@@ -251,10 +251,10 @@ void make_main_xacro(vector < bool > & is_joint_revolute, vector < float > & alp
     xacro_file << s_joint << endl;
     ++j_idx;
   }
-  // add claw
+  // adding a claw to the end effector, it looks nice
   s_joint = "    <xacro:claw parent=\"l\" rpy=\"\" xyz=\"\" scale=\"\"/>";
-  float x_offset = 0.642; //model is not centered in 0,0,0
-  float scale_default = 0.015; //when manipulator scale is 1 this is the right scale for the claw
+  float x_offset = 0.642; // model is not centered in 0,0,0
+  float scale_default = 0.015; // when manipulator scale is 1 this is the right scale for the claw
   s_scale = to_string(scale_default * scale) + " " + to_string(scale_default * scale) + " " + to_string(scale_default * scale);
   if (as.back() == 0 || !is_joint_revolute.back()) {
     link_rpy = "0 0 0";
@@ -262,9 +262,6 @@ void make_main_xacro(vector < bool > & is_joint_revolute, vector < float > & alp
   } else {
     link_rpy = "0 " + to_string(M_PI / 2) + " 0";
     xyz_link = to_string(as.back()) + " 0 " + to_string(-x_offset * scale);
-
-    //link_rpy = "0 "+to_string(M_PI/2)+" 0";
-    //xyz_link = "0 0 0";//to_string(x_offset*scale)+" 0 "+to_string(-as.back());
   }
   //scale
   s_joint.insert(48, s_scale);
@@ -293,7 +290,7 @@ void make_main_xacro(vector < bool > & is_joint_revolute, vector < float > & alp
 void add_gazebo_controllers(vector < bool > & fixed_joints) {
   char l[256];
   int n_joints = fixed_joints.size();
-  //template gazebo file. Used since the file is long
+  // template gazebo file. Used since the file is long
   ifstream g_template;
   g_template.open("./src/RP_robot_manipulator/launch/gazebo_template.txt");
   ofstream gazebo;
@@ -328,6 +325,5 @@ void add_yaml_joints(vector < bool > & fixed_joints) {
       joints_file << "  joint: l" << i << "_to_l" << i + 1 << endl;
     }
   }
-
   joints_file.close();
 }
