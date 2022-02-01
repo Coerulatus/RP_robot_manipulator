@@ -24,7 +24,7 @@
         <parent link="${parent}"/>
         <child link="${prefix}"/>
         <origin rpy="${joint_rpy}" xyz="${joint_xyz}"/> 
-        <limit effort="30" velocity="1.0"/>
+        <limit effort="300" velocity="1.0"/>
         <dynamics damping="0.5" friction="0.0"/>
     </joint>
 

@@ -6,16 +6,15 @@
     <xacro:include filename="$(find project_rp)/urdf/base.xacro" />
     <xacro:include filename="$(find project_rp)/urdf/claw.xacro" />
     <xacro:base name="l0" />
-    <xacro:r_link prefix="l1" parent="l0" length="1.280000" radius="0.200000" joint_rpy="0 0 0" joint_xyz="0 0 0" link_rpy="0 0 0" link_xyz="0 0 0.640000"/>
-    <xacro:r_link prefix="l2" parent="l1" length="0.2" radius="0.200000" joint_rpy="-1.570796 0 0" joint_xyz="0.000000 0 1.280000" link_rpy="0 0 0" link_xyz="0 0 0.000000"/>
-    <xacro:f_link prefix="l3" parent="l2" length="-6.127000" radius="0.200000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="-3.063500 0 0.000000"/>
-    <xacro:r_link prefix="l4" parent="l3" length="0.2" radius="0.200000" joint_rpy="0.000000 0 0" joint_xyz="-6.127000 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.000000"/>
-    <xacro:f_link prefix="l5" parent="l4" length="5.716000" radius="0.200000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="2.858000 0 0.000000"/>
-    <xacro:r_link prefix="l6" parent="l5" length="1.639000" radius="0.200000" joint_rpy="3.141593 0 0" joint_xyz="5.716000 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.819500"/>
-    <xacro:r_link prefix="l7" parent="l6" length="-1.157000" radius="0.200000" joint_rpy="1.570796 0 0" joint_xyz="0.000000 0 1.639000" link_rpy="0 0 0" link_xyz="0 0 -0.578500"/>
-    <xacro:r_link prefix="l8" parent="l7" length="0.922000" radius="0.200000" joint_rpy="-1.570796 0 0" joint_xyz="0.000000 0 -1.157000" link_rpy="0 0 0" link_xyz="0 0 0.461000"/>
-    <xacro:f_link prefix="l9" parent="l8" length="0.000000" radius="0.200000" joint_xyz="0.000000 0 0.922000" link_rpy="0 1.570796 0" link_xyz="-0.000000 0 0"/>
-    <xacro:claw parent="l9" xyz="1.284000 0 0" scale="0.030000 0.030000 0.030000"/>
+    <xacro:p_link prefix="l1" parent="l0" length="2.000000" radius="0.080000" joint_rpy="0 0 0" joint_xyz="0 0 0" link_rpy="0 0 0" link_xyz="0 0 -1.000000"/>
+    <xacro:f_link prefix="l2" parent="l1" length="1.000000" radius="0.100000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="0.500000 0 0.000000"/>
+    <xacro:r_link prefix="l3" parent="l2" length="0.2" radius="0.100000" joint_rpy="-1.570796 0 0" joint_xyz="1.000000 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.000000"/>
+    <xacro:f_link prefix="l4" parent="l3" length="1.000000" radius="0.100000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="0.500000 0 0.000000"/>
+    <xacro:r_link prefix="l5" parent="l4" length="0.2" radius="0.100000" joint_rpy="0.000000 0 0" joint_xyz="1.000000 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.000000"/>
+    <xacro:f_link prefix="l6" parent="l5" length="1.000000" radius="0.100000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="0.500000 0 0.000000"/>
+    <xacro:r_link prefix="l7" parent="l6" length="0.2" radius="0.100000" joint_rpy="0.000000 0 0" joint_xyz="1.000000 0 0.000000" link_rpy="0 0 0" link_xyz="0 0 0.000000"/>
+    <xacro:f_link prefix="l8" parent="l7" length="1.000000" radius="0.100000" joint_xyz="0 0 0" link_rpy="0 1.570796 0" link_xyz="0.500000 0 0.000000"/>
+    <xacro:claw parent="l8" rpy="0 1.570796 0" xyz="1.000000 0 -0.642000" scale="0.015000 0.015000 0.015000"/>
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
             <robotNamespace>/</robotNamespace>

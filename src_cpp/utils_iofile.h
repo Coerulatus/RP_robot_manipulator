@@ -220,11 +220,14 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
   }
   
   // final link is a fixed link, it's needed if joint is revolute, if it's prismatic the end effector is on the link's end
-  if(is_joint_revolute.back()){
+  if(is_joint_revolute.back() && as.back()==0){
 		s_joint = "    <xacro:f_link prefix=\"l\" parent=\"l\" length=\"\" radius=\"\" joint_xyz=\"\" link_rpy=\"\" link_xyz=\"\"/>";
 		xyz_joint = to_string(as.back())+" 0 "+to_string(ds.back());
 		xyz_link = to_string(-as.back()/2)+" 0 0";
-		link_rpy = "0 "+to_string(M_PI/2)+" 0";
+		if(as.back()==0)
+			link_rpy = "0 "+to_string(M_PI/2)+" 0";
+		else
+			link_rpy = "0 0 0";
 		length = to_string(as.back());
 		
 		//link_xyz
@@ -247,17 +250,27 @@ void make_main_xacro(vector<bool>& is_joint_revolute, vector<float>& alphas, vec
 		++j_idx;
 	}
 	// add claw
-	s_joint = "    <xacro:claw parent=\"l\" xyz=\"\" scale=\"\"/>";
+	s_joint = "    <xacro:claw parent=\"l\" rpy=\"\" xyz=\"\" scale=\"\"/>";
 	float x_offset = 0.642; //model is not centered in 0,0,0
 	float scale_default = 0.015; //when manipulator scale is 1 this is the right scale for the claw
 	s_scale = to_string(scale_default*scale)+" "+to_string(scale_default*scale)+" "+to_string(scale_default*scale);
-	xyz_link = to_string(x_offset*scale)+" 0 0";
-	
+	if(as.back()==0 || !is_joint_revolute.back()){
+		link_rpy = "0 0 0";
+		xyz_link = to_string(x_offset*scale)+" 0 0";
+	}else{
+		link_rpy = "0 "+to_string(M_PI/2)+" 0";
+		xyz_link = to_string(as.back())+" 0 "+to_string(-x_offset*scale);
+		
+		//link_rpy = "0 "+to_string(M_PI/2)+" 0";
+		//xyz_link = "0 0 0";//to_string(x_offset*scale)+" 0 "+to_string(-as.back());
+	}
 	//scale
-	s_joint.insert(41,s_scale);
+	s_joint.insert(48,s_scale);
 	//link_xyz
-	s_joint.insert(32,xyz_link);
-	//oarent
+	s_joint.insert(39,xyz_link);
+	//link_rpy
+	s_joint.insert(32,link_rpy);
+	//parent
 	s_joint.insert(25,to_string(j_idx));
 	
 	// write claw to file

@@ -2,10 +2,10 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
 
-<xacro:macro name="claw" params="parent xyz scale">
+<xacro:macro name="claw" params="parent rpy xyz scale">
 	<link name="claw">
         <visual>
-            <origin rpy="0 0 0" xyz="${xyz}"/> 
+            <origin rpy="${rpy}" xyz="${xyz}"/> 
             <geometry>
                 <mesh filename="package://project_rp/urdf/Claw.stl" scale="${scale}"/>
             </geometry>
