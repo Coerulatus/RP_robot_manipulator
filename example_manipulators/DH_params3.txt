@@ -1,0 +1,7 @@
+scale 1
+p_limit 2
+# dh_params: alpha,a,d,theta
+-pi/2 1 q1 0
+0 1 0 q2
+0 1 0 q3
+0 1 0 q4

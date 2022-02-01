@@ -1,0 +1,7 @@
+scale 1
+p_limit 1.5
+#alpha_i,a_i,d_i,theta_i
+pi/2 0.2 1 q1
+0 1 0 q2
+pi/2 0.2 0 q3
+0 0 q4 0
