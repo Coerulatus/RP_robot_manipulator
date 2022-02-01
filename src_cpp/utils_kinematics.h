@@ -1,4 +1,6 @@
-#pragma once#include <Eigen/Core>
+#pragma once
+
+#include <Eigen/Core>
 
 #include <Eigen/StdVector>
 
