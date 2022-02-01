@@ -1,4 +1,6 @@
-#pragma once#include <Eigen/Core>
+#pragma once
+
+#include <Eigen/Core>
 
 #include <Eigen/StdVector>
 
@@ -10,7 +12,7 @@ using namespace std;
 using namespace Eigen;
 
 Matrix4f get_R(float alpha, float a, float d, float theta) {
-  # the matrix R is used to pass from the reference frame of joint i-1 to the reference frame of joint i
+  // the matrix R is used to pass from the reference frame of joint i-1 to the reference frame of joint i
   Matrix4f R;
   R(0, 0) = cos(theta);
   R(0, 1) = -cos(alpha) * sin(theta);
@@ -74,9 +76,9 @@ Matrix4f get_dR_dd(float alpha, float a, float d, float theta) {
 }
 
 MatrixXf jacobian(vector < bool > & is_joint_revolute, vector < float > & alphas, vector < float > & as, vector < float > & ds, vector < float > & thetas) {
-  # since the final end effector matrix T is the product of the R matrices we can calculate the qi derivative of T by deriving only the Ri matrix and keeping the rest as is 
+  // since the final end effector matrix T is the product of the R matrices we can calculate the qi derivative of T by deriving only the Ri matrix and keeping the rest as is 
   int n_joints = is_joint_revolute.size();
-  # jacobian
+  // jacobian
   MatrixXf J(3, n_joints);
   vector < Matrix4f, aligned_allocator < Matrix4f > > Rs;
 
@@ -109,7 +111,7 @@ Vector3f direct_kinematics(vector < float > & alphas, vector < float > & as, vec
   for (int i = 0; i < n_joints; i++) {
     T *= get_R(alphas[i], as[i], ds[i], thetas[i]);
   }
-  # return only position
+  // return only position
   return T.block(0, 3, 3, 1);
 }
 
