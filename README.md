@@ -30,9 +30,9 @@ The program asks for the x,y,z coordinates that the robot end effector should re
 ### DH_params.txt explanation
 DH_params.txt file needs to be either in project_folder or in project_folder/src/RP_robot_manipulator/src_cpp/
 
-The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The scale parameter changes the default value of the joint radius, by multiplying 0.1 by scale.
+The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The **scale** parameter changes the default value of the joint radius, by multiplying 0.1 by scale.
 
-The p_limit parameter sets the limit for the prismatic joints of the model.
+The **p_limit** parameter sets the limit for the prismatic joints of the model.
 
 The third line is there to separate the file but is not used by the program; it needs to be kept for the program to work properly.
 
@@ -40,5 +40,7 @@ For the *Denavit–Hartenberg* parameters the conventions used are:
 * the first joint is positioned on [0,0,0] and has the z-axis pointing upwards
 * if the last joint is revolute then the last reference frame needs to have the x-axis pointing in the direction of the link
 * if the last joint is prismatic then the last reference frame needs to have the z-axis pointing in the direction of the link
+
+The parameters are reported in the following order: *alpha a d theta*. The angles are expressed in radians and the expressions +-pi,+-pi/2 can be used. 
 
 The projects comes with an example file already present in the src_cpp folder, and more examples in the example_manipulators folder.
