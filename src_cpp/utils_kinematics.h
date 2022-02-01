@@ -10,6 +10,7 @@ using namespace std;
 using namespace Eigen;
 
 Matrix4f get_R(float alpha, float a, float d, float theta) {
+  # the matrix R is used to pass from the reference frame of joint i-1 to the reference frame of joint i
   Matrix4f R;
   R(0, 0) = cos(theta);
   R(0, 1) = -cos(alpha) * sin(theta);
@@ -73,7 +74,9 @@ Matrix4f get_dR_dd(float alpha, float a, float d, float theta) {
 }
 
 MatrixXf jacobian(vector < bool > & is_joint_revolute, vector < float > & alphas, vector < float > & as, vector < float > & ds, vector < float > & thetas) {
+  # since the final end effector matrix T is the product of the R matrices we can calculate the qi derivative of T by deriving only the Ri matrix and keeping the rest as is 
   int n_joints = is_joint_revolute.size();
+  # jacobian
   MatrixXf J(3, n_joints);
   vector < Matrix4f, aligned_allocator < Matrix4f > > Rs;
 
@@ -81,20 +84,20 @@ MatrixXf jacobian(vector < bool > & is_joint_revolute, vector < float > & alphas
     Rs.push_back(get_R(alphas[i], as[i], ds[i], thetas[i]));
   }
 
-  Matrix4f T;
-  T.setIdentity();
+  Matrix4f dT_dqi;
+  dT_dqi.setIdentity();
   for (int i = 0; i < n_joints; ++i) {
     for (int j = 0; j < n_joints; ++j) {
       if (i == j) {
         if (is_joint_revolute[i])
-          T = T * get_dR_dtheta(alphas[i], as[i], ds[i], thetas[i]);
+          dT_dqi = dT_dqi * get_dR_dtheta(alphas[i], as[i], ds[i], thetas[i]);
         else
-          T = T * get_dR_dd(alphas[i], as[i], ds[i], thetas[i]);
+          dT_dqi = dT_dqi * get_dR_dd(alphas[i], as[i], ds[i], thetas[i]);
       } else
-        T = T * Rs[j];
+        dT_dqi = dT_dqi * Rs[j];
     }
-    J.block(0, i, 3, 1) = T.block(0, 3, 3, 1);
-    T.setIdentity();
+    J.block(0, i, 3, 1) = dT_dqi.block(0, 3, 3, 1);
+    dT_dqi.setIdentity();
   }
   return J;
 }
@@ -106,6 +109,7 @@ Vector3f direct_kinematics(vector < float > & alphas, vector < float > & as, vec
   for (int i = 0; i < n_joints; i++) {
     T *= get_R(alphas[i], as[i], ds[i], thetas[i]);
   }
+  # return only position
   return T.block(0, 3, 3, 1);
 }
 
