@@ -43,4 +43,5 @@ For the *Denavit–Hartenberg* parameters the conventions used are:
 
 The parameters are reported in the following order: *alpha a d theta*. The angles are expressed in radians and the expressions +-pi,+-pi/2 can be used. 
 
-The projects comes with an example file already present in the src_cpp folder, and more examples in the example_manipulators folder.
+The projects comes with an example file already present in the *src_cpp* folder, and more examples in the **example_manipulators** folder.
+Any of the files in the folder can be copied to the *project_rp* folder, with the name DH_params.txt; after that the program make_manipulator needs to be run and then gazebo can be launched with the new manipulator.
