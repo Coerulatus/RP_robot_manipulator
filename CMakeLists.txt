@@ -13,6 +13,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 include_directories(. /usr/include/eigen3)
 
 add_executable(make_manipulator src_cpp/make_manipulator.cpp)
-target_link_libraries(make_manipulator Eigen3::Eigen)
 add_executable(set_joints src_cpp/set_joints.cpp)
 target_link_libraries(set_joints ${catkin_LIBRARIES})
+add_executable(inverse_kinematics src_cpp/inverse_kinematics.cpp)
+target_link_libraries(inverse_kinematics Eigen3::Eigen ${catkin_LIBRARIES})
