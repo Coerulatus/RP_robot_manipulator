@@ -28,7 +28,7 @@ To control robot position:
 The program asks for the x,y,z coordinates that the robot end effector should reach. A gradient method is used so the robot might stop close to singularities or might try an unreachable configuration. Joint limits are not checked. The initial configuration is the current robot pose.
 
 ### DH_params.txt explanation
-DH_params.txt file needs to be either in project_folder or in project_folder/src/src_cpp/
+DH_params.txt file needs to be either in project_folder or in project_folder/src/RP_robot_manipulator/src_cpp/
 
 The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The scale parameter changes the default value of the joint radius, by multiplying 0.1 by scale.
 
