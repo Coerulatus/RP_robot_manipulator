@@ -22,15 +22,15 @@ To controll the joints:
 
 The program loops over the joints asking the value to set the current joint to. More than one value can be specified at a time. Use 's' to keep a joint still. Use 'q' to exit the program.
 
-To control the robot's position:
+To control the end effector's position in the cartesias space:
 * ```rosrun project_rp inverse_kinematics```
 
 The program asks for the x,y,z coordinates that the robot end effector should reach. A gradient method is used so the robot might stop close to singularities or might try an unreachable configuration. Joint limits are not checked. The initial configuration is the current robot pose.
 
 ### DH_params.txt explanation
-DH_params.txt file needs to be either in project_folder or in project_folder/src/RP_robot_manipulator/src_cpp/
+DH_params.txt file needs to be either in *project_folder* or in *project_folder/src/RP_robot_manipulator/src_cpp/*
 
-The robot's links have default radius of 0.1, which means they are suitable for links of length between 0.5 and 5. The **scale** parameter changes the default value of the joint radius, by multiplying 0.1 by scale.
+The robot's links have default radius of 0.1, which means, visually, they are suitable for links of length between 0.5 and 2. The **scale** parameter changes the default value of the joint radius, by multiplying 0.1 by scale. These changes are only visual.
 
 The **p_limit** parameter sets the limit for the prismatic joints of the model.
 
@@ -41,7 +41,7 @@ For the *Denavit–Hartenberg* parameters the conventions used are:
 * if the last joint is revolute then the last reference frame needs to have the x-axis pointing in the direction of the link
 * if the last joint is prismatic then the last reference frame needs to have the z-axis pointing in the direction of the link
 
-The parameters are reported in the following order: *alpha a d theta*. The angles are expressed in radians and the expressions +-pi,+-pi/2 can be used. 
+The parameters are reported in the following order: *alpha a d theta*. The angles are expressed in radians and the expressions +pi,-pi,+pi/2,-pi/2 can be used. 
 
-The projects comes with an example file already present in the *src_cpp* folder, and more examples in the **example_manipulators** folder.
-Any of the files in the folder can be copied to the *project_rp* folder, with the name DH_params.txt; after that the program make_manipulator needs to be run and then gazebo can be launched with the new manipulator.
+The project comes with an example file already present in the *src_cpp* folder, and more examples in the **example_manipulators** folder.
+Any of the files in this folder can be copied to the *project_rp* folder, with the name DH_params.txt; after that the program make_manipulator needs to be run and then gazebo can be launched with the new manipulator.
