@@ -1,0 +1,20 @@
+scale 0.75
+p_limit 1
+# dh_params: alpha,a,d,theta
+pi/2 0 0.5 q1
+pi/2 0 0 q2
+-pi/2 0 0.5 q3
+pi/2 0 0 q4
+-pi/2 0 0.5 q5
+pi/2 0 0 q6
+-pi/2 0 0.5 q7
+pi/2 0 0 q8
+-pi/2 0 0.5 q9
+pi/2 0 0 q10
+-pi/2 0 0.5 q11
+pi/2 0 0 q12
+-pi/2 0 0.5 q13
+pi/2 0 0 q14
+-pi/2 0 0.5 q15
+pi/2 0 0 q16
+-pi/2 0 0.5 q17
